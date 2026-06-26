@@ -1,0 +1,17 @@
+[project]
+name = "unlimited-ocr-local"
+version = "0.1.0"
+description = "Local uv-managed environment for Baidu Unlimited-OCR inference"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "sglang",
+    "pymupdf==1.27.2.2",
+    "huggingface-hub>=1.2.3",
+    "kernels==0.11.7",
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+sglang = { path = "wheel/sglang-0.0.0.dev11416+g92e8bb79e-py3-none-any.whl" }

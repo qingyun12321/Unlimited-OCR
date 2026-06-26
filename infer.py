@@ -6,11 +6,13 @@ Two input modes are supported:
   2. PDF pages: pass --pdf and each converted page is sent as one request.
 """
 
+import atexit
 import argparse
 import base64
 import json
 import os
 import subprocess
+import shutil
 import sys
 import tempfile
 import time
@@ -52,6 +54,7 @@ def pdf_to_images(pdf_path: str, dpi: int = 300) -> list[str]:
 
     doc = fitz.open(pdf_path)
     tmp_dir = tempfile.mkdtemp(prefix="pdf_ocr_")
+    atexit.register(shutil.rmtree, tmp_dir, ignore_errors=True)
     image_paths = []
     mat = fitz.Matrix(dpi / 72, dpi / 72)
     for i, page in enumerate(doc):
@@ -100,7 +103,7 @@ def start_server(args):
         "--served-model-name",
         SERVED_MODEL_NAME,
         "--attention-backend",
-        ATTENTION_BACKEND,
+        args.attention_backend,
         "--page-size",
         str(PAGE_SIZE),
         "--mem-fraction-static",
@@ -312,6 +315,7 @@ def parse_args():
     parser.add_argument("--gpu", default="0")
     parser.add_argument("--model_dir", default="baidu/Unlimited-OCR")
     parser.add_argument("--image_mode", choices=("gundam", "base"), default="gundam")
+    parser.add_argument("--attention_backend", default=ATTENTION_BACKEND)
     parser.add_argument("--server_log", default="./log/sglang_server.log")
     return parser.parse_args()
 
